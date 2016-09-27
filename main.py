@@ -3,7 +3,7 @@ import scipy.misc
 import numpy as np
 
 from model import DCGAN
-from utils import pp, visualize, to_json
+from utils import pp, visualize, visualize_mnist, to_json
 
 import tensorflow as tf
 
@@ -46,15 +46,20 @@ def main(_):
             dcgan.load(FLAGS.checkpoint_dir)
 
         if FLAGS.visualize:
-            to_json("./web/js/layers.js", [dcgan.h0_w, dcgan.h0_b, dcgan.g_bn0],
-                                          [dcgan.h1_w, dcgan.h1_b, dcgan.g_bn1],
-                                          [dcgan.h2_w, dcgan.h2_b, dcgan.g_bn2],
-                                          [dcgan.h3_w, dcgan.h3_b, dcgan.g_bn3],
-                                          [dcgan.h4_w, dcgan.h4_b, None])
+            if FLAGS.dataset == "mnist":
+                OPTION = 0
+                DIGIT = 8
+                visualize_mnist(sess, dcgan, FLAGS, OPTION, DIGIT)
+            else:
+                to_json("./web/js/layers.js", [dcgan.h0_w, dcgan.h0_b, dcgan.g_bn0],
+                                              [dcgan.h1_w, dcgan.h1_b, dcgan.g_bn1],
+                                              [dcgan.h2_w, dcgan.h2_b, dcgan.g_bn2],
+                                              [dcgan.h3_w, dcgan.h3_b, dcgan.g_bn3],
+                                              [dcgan.h4_w, dcgan.h4_b, None])
 
-            # Below is codes for visualization
-            OPTION = 2
-            visualize(sess, dcgan, FLAGS, OPTION)
+                # Below is codes for visualization
+                OPTION = 2
+                visualize(sess, dcgan, FLAGS, OPTION)
 
 if __name__ == '__main__':
     tf.app.run()

@@ -143,6 +143,21 @@ def make_gif(images, fname, duration=2, true_image=False):
   clip = mpy.VideoClip(make_frame, duration=duration)
   clip.write_gif(fname, fps = len(images) / duration)
 
+def visualize_mnist(sess, dcgan, config, option, digit):
+    if option == 0:
+        z_sample = np.random.uniform(-0.5, 0.5, size=(config.batch_size, dcgan.z_dim))
+
+        print("z_dim = ", dcgan.z_dim)
+        print("y_dim = ", dcgan.y_dim)
+        print("batch_size = ", config.batch_size)
+
+        y_sample = np.zeros((config.batch_size, dcgan.y_dim))
+        y_sample[..., digit] = 1
+        print(y_sample)
+
+        samples = sess.run(dcgan.sampler, feed_dict={dcgan.z: z_sample, dcgan.y: y_sample})
+        save_images(samples, [8, 8], './samples/test_%s.png' % strftime("%Y-%m-%d %H:%M:%S", gmtime()))
+
 def visualize(sess, dcgan, config, option):
   if option == 0:
     z_sample = np.random.uniform(-0.5, 0.5, size=(config.batch_size, dcgan.z_dim))
